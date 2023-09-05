@@ -2,9 +2,9 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = new TaskManager();
 
-        Task task1 = new Task("задача", "описание", "new");
-        Task task2 = new Task("з2", "о2", "done");
-        Task task3 = new Task("Изменено", "Изменено", "Изменено");
+        Task task1 = new Task("задача", "описание");
+        Task task2 = new Task("з2", "о2");
+        Task task3 = new Task("Изменено", "Изменено");
         Epic epic1 = new Epic("epic1", "descr1", "smth1");
         SubTask subTask1 = new SubTask("subtask1", "descr1", "smth1");
         SubTask subTask2 = new SubTask("subtask2", "descr2", "smth2");
@@ -19,14 +19,14 @@ public class Main {
 
         taskManager.addNewEpicTask(epic1);
 
-        subTask1.setEpicId(epic1.getTaskId());
+        subTask1.setEpicId(epic1.getId());
         taskManager.addNewSubTask(subTask1);
-        subTask2.setEpicId(epic1.getTaskId());
+        subTask2.setEpicId(epic1.getId());
         taskManager.addNewSubTask(subTask2);
 
         taskManager.addNewEpicTask(epic2);
 
-        subTask3.setEpicId(epic2.getTaskId());
+        subTask3.setEpicId(epic2.getId());
         taskManager.addNewSubTask(subTask3);
 
         taskManager.addNewEpicTask(epic3);

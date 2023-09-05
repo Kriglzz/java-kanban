@@ -1,13 +1,20 @@
 public class Task {
+    private static int count = 0;
+    protected int id;
     protected String name;
     protected String description;
-    protected int taskId;
     protected String status;
 
-    public Task(String name, String description, String status) {
+    public Task(String name, String description) {
+        this.id = generateId();
         this.name = name;
         this.description = description;
-        this.status = status;
+        this.status = "NEW";
+
+    }
+
+    Integer generateId() {
+        return ++count;
     }
 
     public String getName() {
@@ -26,12 +33,12 @@ public class Task {
         this.description = description;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public int getId() {
+        return id;
     }
 
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getStatus() {
@@ -45,9 +52,9 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", taskId=" + taskId +
                 ", status='" + status + '\'' +
                 '}';
     }

@@ -1,9 +1,9 @@
 public class SubTask extends Task {
 
-    protected int epicId;
+    private int epicId;
 
     public SubTask(String name, String description, String status) {
-        super(name, description, status);
+        super(name, description);
     }
 
     public int getEpicId() {

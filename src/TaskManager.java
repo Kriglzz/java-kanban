@@ -5,24 +5,30 @@ public class TaskManager {
     private HashMap<Integer, Task> taskList = new HashMap<>();
     private HashMap<Integer, Epic> epicList = new HashMap<>();
     private HashMap<Integer, SubTask> subTaskList = new HashMap<>();
-    private int id = 1;
+    private int nextId = 1;
 
 
     public void addNewTask(Task task) {
-        task.setTaskId(id);
-        taskList.put(task.getTaskId(), task);
-        id++;
+        task.setId(nextId);
+        taskList.put(task.getId(), task);
+        nextId++;
     }
 
     public void updateTask(Task task) {
-        taskList.get(task.getTaskId()).setName(task.getName());
-        taskList.get(task.getTaskId()).setDescription(task.getDescription());
-        taskList.get(task.getTaskId()).setStatus(task.getStatus());
+        int id = task.getId();
+        Task savedTask = taskList.get(id);
+        if (savedTask == null) {
+            return;
+        }
+        taskList.put(id, task);
+        /*taskList.get(task.getId()).setName(task.getName());
+        taskList.get(task.getId()).setDescription(task.getDescription()); То, что было
+        taskList.get(task.getId()).setStatus(task.getStatus());*/
     }
 
-    public void deleteTask(int desiredId) {
-        if (taskList.containsKey(desiredId)) {
-            taskList.remove(desiredId);
+    public void deleteTask(int taskId) {
+        if (taskList.containsKey(taskId)) {
+            taskList.remove(taskId);
         }
     }
 
@@ -39,20 +45,26 @@ public class TaskManager {
     }
 
     public void addNewEpicTask(Epic epic) {
-        epic.setTaskId(id);
+        epic.setId(nextId);
         epic.setStatus("NEW");
-        epicList.put(epic.getTaskId(), epic);
-        id++;
+        epicList.put(epic.getId(), epic);
+        nextId++;
     }
 
     public void updateEpic(Epic epic) {
-        epicList.get(epic.getTaskId()).setName(epic.getName());
-        epicList.get(epic.getTaskId()).setDescription(epic.getDescription());
+        int id = epic.getId();
+        Epic savedEpic = epicList.get(id);
+        if (savedEpic == null) {
+            return;
+        }
+        epicList.put(id, epic);
+        /*epicList.get(epic.getId()).setName(epic.getName());
+        epicList.get(epic.getId()).setDescription(epic.getDescription()); То, что было*/
     }
 
-    public void deleteEpic(int desiredId) {
-        if (epicList.containsKey(desiredId)) {
-            epicList.remove(desiredId);
+    public void deleteEpic(int epicId) {
+        if (epicList.containsKey(epicId)) {
+            epicList.remove(epicId);
         }
     }
 
@@ -68,32 +80,37 @@ public class TaskManager {
         return new ArrayList<>(epicList.values());
     }
 
-    public ArrayList<Integer> getEpicSubTaskIds(int id) {
-        if (epicList.get(id) != null) {
-            return epicList.get(id).getSubTaskIds();
+    public ArrayList<Integer> getEpicSubTaskIds(int desiredId) {
+        if (epicList.get(desiredId) != null) {
+            return epicList.get(desiredId).getSubTaskIds();
         } else {
             return null;
         }
     }
 
     public void addNewSubTask(SubTask subTask) {
-        subTask.setTaskId(id);
-        subTaskList.put(subTask.getTaskId(), subTask);
-        epicList.get(subTask.getEpicId()).getSubTaskIds().add(subTask.getTaskId());
+        subTaskList.put(subTask.getId(), subTask);
+        epicList.get(subTask.getEpicId()).getSubTaskIds().add(subTask.getId());
         checkEpicStatus(subTask.getEpicId());
-        id++;
+        nextId++;
     }
 
     public void updateSubTask(SubTask subTask) {
-        subTaskList.get(subTask.getTaskId()).setName(subTask.getName());
-        subTaskList.get(subTask.getTaskId()).setDescription(subTask.getDescription());
-        subTaskList.get(subTask.getTaskId()).setStatus(subTask.getStatus());
-        checkEpicStatus(subTask.getTaskId());
+        int id = subTask.getId();
+        SubTask savedSubTask = subTaskList.get(id);
+        if (savedSubTask == null) {
+            return;
+        }
+        taskList.put(id, subTask);
+        /*subTaskList.get(subTask.getId()).setName(subTask.getName());
+        subTaskList.get(subTask.getId()).setDescription(subTask.getDescription()); То, что было
+        subTaskList.get(subTask.getId()).setStatus(subTask.getStatus());*/
+        checkEpicStatus(subTask.getId());
     }
 
-    public void deleteSubTask(int desiredId) {
-        if (subTaskList.containsKey(desiredId)) {
-            subTaskList.remove(desiredId);
+    public void deleteSubTask(int subTaskId) {
+        if (subTaskList.containsKey(subTaskId)) {
+            subTaskList.remove(subTaskId);
         }
     }
 
@@ -109,24 +126,23 @@ public class TaskManager {
         return new ArrayList<>(subTaskList.values());
     }
 
-    public void checkEpicStatus(int checkId) {
+    private void checkEpicStatus(int checkId) {
         if (epicList.get(checkId).subTaskIds != null && epicList.get(checkId).subTaskIds.isEmpty()) {
             epicList.get(checkId).status = "NEW";
         } else {
             boolean checkNew = false;
             boolean checkDone = false;
             for (SubTask taskId : subTaskList.values()) {
-                if (!taskId.status.equals("NEW") && !taskId.status.equals("DONE") && taskId.epicId == checkId) {
+                if (!taskId.status.equals("NEW") && !taskId.status.equals("DONE") && taskId.getEpicId() == checkId) {
                     epicList.get(checkId).status = "IN_PROGRESS";
                     break;
-                } else if (taskId.status.equals("NEW") && taskId.epicId == checkId) {
-                    if (checkDone) {
-                        epicList.get(checkId).status = "IN_PROGRESS";
-                        break;
-                    } else {
-                        checkNew = true;
-                    }
-                } else if (taskId.status.equals("DONE") && taskId.epicId == checkId) {
+                } else if (taskId.status.equals("NEW") && taskId.getEpicId() == checkId && checkDone) {
+                    epicList.get(checkId).status = "IN_PROGRESS";
+                    break;
+                } else if (taskId.status.equals("NEW") && taskId.getEpicId() == checkId && !checkDone) {
+                    checkNew = true;
+                    break;
+                } else if (taskId.status.equals("DONE") && taskId.getEpicId() == checkId) {
                     if (checkNew) {
                         epicList.get(checkId).status = "IN_PROGRESS";
                         break;
