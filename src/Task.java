@@ -10,7 +10,6 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = "NEW";
-
     }
 
     Integer generateId() {

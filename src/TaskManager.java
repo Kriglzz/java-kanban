@@ -5,13 +5,9 @@ public class TaskManager {
     private HashMap<Integer, Task> taskList = new HashMap<>();
     private HashMap<Integer, Epic> epicList = new HashMap<>();
     private HashMap<Integer, SubTask> subTaskList = new HashMap<>();
-    private int nextId = 1;
-
 
     public void addNewTask(Task task) {
-        task.setId(nextId);
         taskList.put(task.getId(), task);
-        nextId++;
     }
 
     public void updateTask(Task task) {
@@ -21,9 +17,6 @@ public class TaskManager {
             return;
         }
         taskList.put(id, task);
-        /*taskList.get(task.getId()).setName(task.getName());
-        taskList.get(task.getId()).setDescription(task.getDescription()); То, что было
-        taskList.get(task.getId()).setStatus(task.getStatus());*/
     }
 
     public void deleteTask(int taskId) {
@@ -45,10 +38,7 @@ public class TaskManager {
     }
 
     public void addNewEpicTask(Epic epic) {
-        epic.setId(nextId);
-        epic.setStatus("NEW");
         epicList.put(epic.getId(), epic);
-        nextId++;
     }
 
     public void updateEpic(Epic epic) {
@@ -58,8 +48,6 @@ public class TaskManager {
             return;
         }
         epicList.put(id, epic);
-        /*epicList.get(epic.getId()).setName(epic.getName());
-        epicList.get(epic.getId()).setDescription(epic.getDescription()); То, что было*/
     }
 
     public void deleteEpic(int epicId) {
@@ -92,7 +80,6 @@ public class TaskManager {
         subTaskList.put(subTask.getId(), subTask);
         epicList.get(subTask.getEpicId()).getSubTaskIds().add(subTask.getId());
         checkEpicStatus(subTask.getEpicId());
-        nextId++;
     }
 
     public void updateSubTask(SubTask subTask) {
@@ -102,9 +89,6 @@ public class TaskManager {
             return;
         }
         taskList.put(id, subTask);
-        /*subTaskList.get(subTask.getId()).setName(subTask.getName());
-        subTaskList.get(subTask.getId()).setDescription(subTask.getDescription()); То, что было
-        subTaskList.get(subTask.getId()).setStatus(subTask.getStatus());*/
         checkEpicStatus(subTask.getId());
     }
 
