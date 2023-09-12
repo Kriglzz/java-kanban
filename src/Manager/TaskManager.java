@@ -1,4 +1,11 @@
+package Manager;
+
+import Task.Epic;
+import Task.SubTask;
+import Task.Task;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
@@ -40,7 +47,5 @@ public interface TaskManager {
 
     ArrayList<SubTask> getAllSubTask();
 
-    void checkEpicStatus(int checkId);
-
-
+    List<Task> getHistoryMethod();
 }

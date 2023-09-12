@@ -1,10 +1,22 @@
+package Manager;
+
+import Task.Epic;
+import Task.Status;
+import Task.SubTask;
+import Task.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> taskList = new HashMap<>();
     private HashMap<Integer, Epic> epicList = new HashMap<>();
     private HashMap<Integer, SubTask> subTaskList = new HashMap<>();
+    private TaskManager taskManager = Managers.getDefault();
+    private HistoryManager historyManager = Managers.getDefaultHistoryManager();
+
+
     @Override
     public void addNewTask(Task task) {
         taskList.put(task.getId(), task);
@@ -34,6 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int taskId) {
+        historyManager.addToHistory(taskList.get(taskId));
         return taskList.get(taskId);
     }
 
@@ -71,6 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getEpic(int taskId) {
+        historyManager.addToHistory(epicList.get(taskId));
         return epicList.get(taskId);
     }
 
@@ -120,6 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getSubTask(int taskId) {
+        historyManager.addToHistory(subTaskList.get(taskId));
         return subTaskList.get(taskId);
     }
 
@@ -128,26 +143,26 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(subTaskList.values());
     }
 
-    @Override
-    public void checkEpicStatus(int checkId) {
-        if (epicList.get(checkId).subTaskIds != null && epicList.get(checkId).subTaskIds.isEmpty()) {
-            epicList.get(checkId).status = Status.NEW;
+    private void checkEpicStatus(int checkId) {
+
+        if (epicList.get(checkId).getSubTaskIds() != null && epicList.get(checkId).getSubTaskIds().isEmpty()) {
+            epicList.get(checkId).setStatus(Status.NEW);
         } else {
             boolean checkNew = false;
             boolean checkDone = false;
             for (SubTask taskId : subTaskList.values()) {
-                if (!taskId.status.equals(Status.NEW) && !taskId.status.equals(Status.DONE) && taskId.getEpicId() == checkId) {
-                    epicList.get(checkId).status = Status.IN_PROGRESS;
+                if (!taskId.getStatus().equals(Status.NEW) && !taskId.getStatus().equals(Status.DONE) && taskId.getEpicId() == checkId) {
+                    epicList.get(checkId).setStatus(Status.IN_PROGRESS);
                     break;
-                } else if (taskId.status.equals(Status.NEW) && taskId.getEpicId() == checkId && checkDone) {
-                    epicList.get(checkId).status = Status.IN_PROGRESS;
+                } else if (taskId.getStatus().equals(Status.NEW) && taskId.getEpicId() == checkId && checkDone) {
+                    epicList.get(checkId).setStatus(Status.IN_PROGRESS);
                     break;
-                } else if (taskId.status.equals(Status.NEW) && taskId.getEpicId() == checkId && !checkDone) {
+                } else if (taskId.getStatus().equals(Status.NEW) && taskId.getEpicId() == checkId && !checkDone) {
                     checkNew = true;
                     break;
-                } else if (taskId.status.equals(Status.DONE) && taskId.getEpicId() == checkId) {
+                } else if (taskId.getStatus().equals(Status.DONE) && taskId.getEpicId() == checkId) {
                     if (checkNew) {
-                        epicList.get(checkId).status = Status.IN_PROGRESS;
+                        epicList.get(checkId).setStatus(Status.IN_PROGRESS);
                         break;
                     } else {
                         checkDone = true;
@@ -155,10 +170,15 @@ public class InMemoryTaskManager implements TaskManager {
                 }
             }
             if (checkNew) {
-                epicList.get(checkId).status = Status.NEW;
+                epicList.get(checkId).setStatus(Status.NEW);
             } else if (checkDone) {
-                epicList.get(checkId).status = Status.DONE;
+                epicList.get(checkId).setStatus(Status.DONE);
             }
         }
+    }
+
+    @Override
+    public List<Task> getHistoryMethod() {
+        return historyManager.getHistory();
     }
 }
