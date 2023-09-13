@@ -11,7 +11,6 @@ public class Main {
 
         TaskManager taskManager = Managers.getDefault();
 
-        HistoryManager historyManager = Managers.getDefaultHistoryManager();
 
         Task task1 = new Task("задача", "описание");
         Task task2 = new Task("з2", "о2");
@@ -25,30 +24,24 @@ public class Main {
         Epic epic3 = new Epic("epic3", "descr3");
 
         taskManager.addNewTask(task1);
-        historyManager.addToHistory(task1);
+        taskManager.getTaskById(1);
         taskManager.addNewTask(task2);
-        historyManager.addToHistory(task2);
+        taskManager.getTaskById(2);
         taskManager.addNewTask(task3);
-        historyManager.addToHistory(task3);
 
         taskManager.addNewEpicTask(epic1);
-        historyManager.addToHistory(epic1);
 
         subTask1.setEpicId(epic1.getId());
         taskManager.addNewSubTask(subTask1);
-        historyManager.addToHistory(subTask1);
         subTask2.setEpicId(epic1.getId());
         taskManager.addNewSubTask(subTask2);
-        historyManager.addToHistory(subTask2);
 
         taskManager.addNewEpicTask(epic2);
 
         subTask3.setEpicId(epic2.getId());
         taskManager.addNewSubTask(subTask3);
-        historyManager.addToHistory(subTask3);
 
         taskManager.addNewEpicTask(epic3);
-        historyManager.addToHistory(epic3);
 
 
         System.out.println("Проверка работы Task.Task");
@@ -56,7 +49,7 @@ public class Main {
         System.out.println("========");
         System.out.println(taskManager.getAllTask());
         System.out.println("========");
-        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTaskById(2));
         System.out.println("========");
         taskManager.deleteTask(3);
         System.out.println(taskManager.getAllTask());
@@ -68,7 +61,7 @@ public class Main {
         System.out.println("========");
         System.out.println(taskManager.getAllEpic());
         System.out.println("========");
-        System.out.println(taskManager.getEpic(4));
+        System.out.println(taskManager.getEpicById(4));
         System.out.println("========");
         taskManager.deleteEpic(5);
         System.out.println(taskManager.getAllEpic());
@@ -78,7 +71,8 @@ public class Main {
         subTask1.setStatus(Status.IN_PROGRESS);
         subTask1.setDescription("ЭТО ИЗМЕНЕННОЕ ОПИСАНИЕ");
         subTask1.setName("ЭТО ИЗМЕНЕННОЕ НАЗВАНИЕ");
-        System.out.println(historyManager.getHistory());
+        System.out.println("========");
+        System.out.println(taskManager.getHistory());
 
     }
 }

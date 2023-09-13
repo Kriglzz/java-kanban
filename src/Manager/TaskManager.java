@@ -17,7 +17,7 @@ public interface TaskManager {
 
     void deleteAllTask();
 
-    Task getTask(int taskId);
+    Task getTaskById(int taskId);
 
     ArrayList<Task> getAllTask();
 
@@ -29,7 +29,7 @@ public interface TaskManager {
 
     void deleteAllEpic();
 
-    Task getEpic(int taskId);
+    Task getEpicById(int taskId);
 
     ArrayList<Epic> getAllEpic();
 
@@ -43,9 +43,9 @@ public interface TaskManager {
 
     void deleteAllSubTask();
 
-    Task getSubTask(int taskId);
+    Task getSubTaskById(int taskId);
 
     ArrayList<SubTask> getAllSubTask();
 
-    List<Task> getHistoryMethod();
+    List<Task> getHistory();
 }
