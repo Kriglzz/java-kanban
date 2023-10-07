@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
 
         TaskManager taskManager = Managers.getDefault();
-
+        HistoryManager historyManager = Managers.getDefaultHistoryManager();
 
         Task task1 = new Task("задача", "описание");
         Task task2 = new Task("з2", "о2");
@@ -48,20 +48,32 @@ public class Main {
         System.out.println(task1);
         System.out.println("========");
         System.out.println(taskManager.getAllTask());
+        System.out.println("ИСТОРИЯ");
+        System.out.println(historyManager.getHistory());
         System.out.println("========");
         System.out.println(taskManager.getTaskById(2));
+        System.out.println(historyManager.getHistory());
         System.out.println("========");
         taskManager.deleteTask(3);
         System.out.println(taskManager.getAllTask());
         System.out.println("========");
         taskManager.deleteAllTask();
         System.out.println(taskManager.getAllTask());
+        System.out.println("ИСТОРИЯ");
+        System.out.println(historyManager.getHistory());
         System.out.println("Проверка работы Task.Epic");
         System.out.println(epic1);
         System.out.println("========");
         System.out.println(taskManager.getAllEpic());
+        System.out.println("ИСТОРИЯ");
+        System.out.println(historyManager.getHistory());
         System.out.println("========");
         System.out.println(taskManager.getEpicById(4));
+        System.out.println("ИСТОРИЯ");
+        System.out.println(historyManager.getHistory());
+        taskManager.deleteEpic(4);
+        System.out.println("ИСТОРИЯ");
+        System.out.println(historyManager.getHistory());
         System.out.println("========");
         taskManager.deleteEpic(5);
         System.out.println(taskManager.getAllEpic());

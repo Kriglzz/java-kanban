@@ -35,6 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteTask(int taskId) {
         if (taskList.containsKey(taskId)) {
             taskList.remove(taskId);
+            historyManager.remove(taskId);
         }
     }
 
@@ -73,6 +74,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpic(int epicId) {
         if (epicList.containsKey(epicId)) {
             epicList.remove(epicId);
+            historyManager.remove(epicId);
         }
     }
 
@@ -123,6 +125,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteSubTask(int subTaskId) {
         if (subTaskList.containsKey(subTaskId)) {
             subTaskList.remove(subTaskId);
+            historyManager.remove(subTaskId);
         }
     }
 
