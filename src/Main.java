@@ -11,8 +11,17 @@ public class Main {
 
         TaskManager taskManager = Managers.getDefault();
         HistoryManager historyManager = Managers.getDefaultHistoryManager();
-
-        Task task1 = new Task("задача", "описание");
+        System.out.println("начало проверки");
+        for (int i = 1; i < 20; i++) {
+            taskManager.addNewTask(new Task("name" + i, "desc" + i));
+        }
+        for (int i = 5; i < 18; i++) {
+            taskManager.getTaskById(i);
+        }
+        var e = taskManager.getHistory();
+        System.out.println(e);
+        System.out.println("конец проверки");
+        /*Task task1 = new Task("задача", "описание");
         Task task2 = new Task("з2", "о2");
         Task task3 = new Task("Изменено", "Изменено");
         Epic epic1 = new Epic("epic1", "descr1");
@@ -53,6 +62,7 @@ public class Main {
         System.out.println("========");
         System.out.println(taskManager.getTaskById(2));
         System.out.println(historyManager.getHistory());
+
         System.out.println("========");
         taskManager.deleteTask(3);
         System.out.println(taskManager.getAllTask());
@@ -84,7 +94,7 @@ public class Main {
         subTask1.setDescription("ЭТО ИЗМЕНЕННОЕ ОПИСАНИЕ");
         subTask1.setName("ЭТО ИЗМЕНЕННОЕ НАЗВАНИЕ");
         System.out.println("========");
-        System.out.println(taskManager.getHistory());
+        System.out.println(taskManager.getHistory());*/
 
     }
 }
