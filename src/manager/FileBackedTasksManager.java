@@ -59,7 +59,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 if (!tasksFromFile.getLast().equals("")) {
                     List<Integer> history = CSVFormatter.historyFromString(tasksFromFile.getLast());
                     for (Integer id : history) {
-                        historyBack(id);
+                        historyHash(id);
                     }
                 }
             }
@@ -69,7 +69,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return read;
     }
 
-    public void historyBack(int id) {
+    public void historyHash(int id) {
         if (taskList.containsKey(id)) {
             historyManager.addToHistory(taskList.get(id));
         } else if (subTaskList.containsKey(id)) {
