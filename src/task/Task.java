@@ -1,14 +1,16 @@
-package Task;
+package task;
 
 public class Task {
     private static int count = 0;
     protected int id;
+    protected TaskTypes taskType;
     protected String name;
     protected String description;
     protected Status status;
 
     public Task(String name, String description) {
         this.id = generateId();
+        this.taskType = TaskTypes.TASK;
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
@@ -37,6 +39,9 @@ public class Task {
     public int getId() {
         return id;
     }
+    public TaskTypes getTaskType() {
+        return taskType;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -54,6 +59,7 @@ public class Task {
     public String toString() {
         return "Task.Task{" +
                 ", id='" + id + '\'' +
+                ", Type='" + taskType + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
