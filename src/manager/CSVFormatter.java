@@ -14,18 +14,22 @@ public class CSVFormatter extends InMemoryTaskManager{
     }
     public static Task fromString(String line) {
         String[] linePart = line.split(", ");
-
         Task task;
+
         if (TaskType.valueOf(linePart[1]).equals(TaskType.TASK)) {
+
             task = new Task(linePart[2].trim(),
                     linePart[4].trim());
+            task.setId(Integer.parseInt(linePart[0]));
         } else if (TaskType.valueOf(linePart[1]).equals(TaskType.SUBTASK)) {
             task = new SubTask(linePart[2].trim(),
                     linePart[4].trim(),
                     Integer.parseInt(linePart[5]));
+            task.setId(Integer.parseInt(linePart[0]));
         } else {
             task = new Epic(linePart[2].trim(),
                     linePart[4].trim());
+            task.setId(Integer.parseInt(linePart[0]));
         }
         return task;
     }

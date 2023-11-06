@@ -32,7 +32,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(fileManager.getAllTask());
         System.out.println(fileManager.getAllEpic());
         System.out.println(fileManager.getAllSubTask());
-        System.out.println(fileBackedTasksManager.getHistory());
+        System.out.println(fileManager.getHistory());
     }
 
     public FileBackedTasksManager(File file) {
@@ -216,4 +216,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
         return subTaskList.get(taskId);
     }
+
 }
+
