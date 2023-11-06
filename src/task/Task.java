@@ -3,14 +3,14 @@ package task;
 public class Task {
     private static int count = 0;
     protected int id;
-    protected TaskTypes taskType;
+    protected TaskType taskType;
     protected String name;
     protected String description;
     protected Status status;
 
     public Task(String name, String description) {
         this.id = generateId();
-        this.taskType = TaskTypes.TASK;
+        this.taskType = TaskType.TASK;
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
@@ -39,7 +39,7 @@ public class Task {
     public int getId() {
         return id;
     }
-    public TaskTypes getTaskType() {
+    public TaskType getTaskType() {
         return taskType;
     }
 

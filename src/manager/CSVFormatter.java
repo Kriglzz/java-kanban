@@ -3,9 +3,8 @@ package manager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
-import task.TaskTypes;
+import task.TaskType;
 
-import java.io.File;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -17,10 +16,10 @@ public class CSVFormatter extends InMemoryTaskManager{
         String[] linePart = line.split(",");
 
         Task task;
-        if (TaskTypes.valueOf(linePart[1]).equals(TaskTypes.TASK)) {
+        if (TaskType.valueOf(linePart[1]).equals(TaskType.TASK)) {
             task = new Task(linePart[2].trim(),
                     linePart[4].trim());
-        } else if (TaskTypes.valueOf(linePart[1]).equals(TaskTypes.SUBTASK)) {
+        } else if (TaskType.valueOf(linePart[1]).equals(TaskType.SUBTASK)) {
             task = new SubTask(linePart[2].trim(),
                     linePart[4].trim(),
                     Integer.parseInt(linePart[5]));

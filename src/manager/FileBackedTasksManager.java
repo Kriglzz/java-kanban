@@ -3,7 +3,6 @@ package manager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
-import task.TaskTypes;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -53,13 +52,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 if (tasksFromFile.size() > 2) {
                     for (int i = 0; i < tasksFromFile.size() - 2; i++) {
                         Task task = CSVFormatter.fromString(tasksFromFile.get(i));
-                        tasksToHash(task);
+                        tasksToHash(task, read);
                     }
                 }
                 if (!tasksFromFile.getLast().equals("")) {
                     List<Integer> history = CSVFormatter.historyFromString(tasksFromFile.getLast());
                     for (Integer id : history) {
-                        historyToHash(id);
+                        historyToHash(id, read);
                     }
                 }
             }
@@ -69,26 +68,26 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return read;
     }
 
-    public void historyToHash(int id) {
-        if (taskList.containsKey(id)) {
-            historyManager.addToHistory(taskList.get(id));
-        } else if (subTaskList.containsKey(id)) {
-            historyManager.addToHistory(subTaskList.get(id));
-        } else if (epicList.containsKey(id)) {
-            historyManager.addToHistory(epicList.get(id));
+    static void historyToHash(int id, FileBackedTasksManager manager) {
+        if ( manager.taskList.containsKey(id)) {
+            manager.historyManager.addToHistory( manager.taskList.get(id));
+        } else if ( manager.subTaskList.containsKey(id)) {
+            manager.historyManager.addToHistory( manager.subTaskList.get(id));
+        } else if ( manager.epicList.containsKey(id)) {
+            manager.historyManager.addToHistory( manager.epicList.get(id));
         }
     }
 
-    public void tasksToHash(Task task) {
+    static void tasksToHash(Task task, FileBackedTasksManager manager) {
         switch (task.getTaskType()) {
             case SUBTASK:
-                subTaskList.put(task.getId(), (SubTask) task);
+                manager.subTaskList.put(task.getId(), (SubTask) task);
                 break;
             case EPIC:
-                epicList.put(task.getId(), (Epic) task);
+                manager.epicList.put(task.getId(), (Epic) task);
                 break;
             case TASK:
-                taskList.put(task.getId(), task);
+                manager.taskList.put(task.getId(), task);
                 break;
         }
     }
