@@ -13,7 +13,7 @@ public class CSVFormatter extends InMemoryTaskManager{
         super();
     }
     public static Task fromString(String line) {
-        String[] linePart = line.split(",");
+        String[] linePart = line.split(", ");
 
         Task task;
         if (TaskType.valueOf(linePart[1]).equals(TaskType.TASK)) {
