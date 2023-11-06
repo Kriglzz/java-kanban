@@ -29,10 +29,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(fileManager.getHistory());
         System.out.println("\n\n" + "new" + "\n\n");
         FileBackedTasksManager fileBackedTasksManager = loadFromFile(new File("saveTasks2.csv"));
-        System.out.println(fileManager.getAllTask());
-        System.out.println(fileManager.getAllEpic());
-        System.out.println(fileManager.getAllSubTask());
-        System.out.println(fileManager.getHistory());
+        System.out.println(fileBackedTasksManager.getAllTask());
+        System.out.println(fileBackedTasksManager.getAllEpic());
+        System.out.println(fileBackedTasksManager.getAllSubTask());
+        System.out.println(fileBackedTasksManager.getHistory());
     }
 
     public FileBackedTasksManager(File file) {

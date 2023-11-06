@@ -19,16 +19,16 @@ public class CSVFormatter extends InMemoryTaskManager{
         if (TaskType.valueOf(linePart[1]).equals(TaskType.TASK)) {
 
             task = new Task(linePart[2].trim(),
-                    linePart[4].trim());
+                    linePart[3].trim());
             task.setId(Integer.parseInt(linePart[0]));
         } else if (TaskType.valueOf(linePart[1]).equals(TaskType.SUBTASK)) {
             task = new SubTask(linePart[2].trim(),
-                    linePart[4].trim(),
+                    linePart[3].trim(),
                     Integer.parseInt(linePart[5]));
             task.setId(Integer.parseInt(linePart[0]));
         } else {
             task = new Epic(linePart[2].trim(),
-                    linePart[4].trim());
+                    linePart[3].trim());
             task.setId(Integer.parseInt(linePart[0]));
         }
         return task;
