@@ -6,6 +6,7 @@ import task.SubTask;
 import task.TaskType;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
@@ -16,10 +17,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static void main(String[] args){
 
         FileBackedTasksManager fileManager = new FileBackedTasksManager(new File("saveTasks2.csv"));
-        fileManager.addNewTask(new Task("task1", "Купить автомобиль"));
-        fileManager.addNewEpicTask(new Epic("new Epic1", "Новый Эпик"));
-        fileManager.addNewSubTask(new SubTask("New Subtask", "Подзадача", 2));
-        fileManager.addNewSubTask(new SubTask("New Subtask2", "Подзадача2", 2));
+        fileManager.addNewTask(new Task("task1", "Купить автомобиль", LocalDateTime.of(2023, 1, 10, 1, 1), 1));
+        fileManager.addNewEpicTask(new Epic("new Epic1", "Новый Эпик", LocalDateTime.of(2023, 2, 11, 1, 1), 1));
+        fileManager.addNewSubTask(new SubTask("New Subtask", "Подзадача", 2, LocalDateTime.of(2023, 3, 11, 1, 1), 1));
+        fileManager.addNewSubTask(new SubTask("New Subtask2", "Подзадача2", 2, LocalDateTime.of(2023, 3, 11, 1, 1), 1));
         fileManager.getTaskById(1);
         fileManager.getEpicById(2);
         fileManager.getSubTaskById(3);
@@ -93,7 +94,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    private void save() {
+    public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("id,type,name,status,description,epic\n");
 
@@ -180,7 +181,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task getEpicById(int taskId) {
+    public Epic getEpicById(int taskId) {
         historyManager.addToHistory(epicList.get(taskId));
         save();
         return epicList.get(taskId);
@@ -211,7 +212,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task getSubTaskById(int taskId) {
+    public SubTask getSubTaskById(int taskId) {
         historyManager.addToHistory(subTaskList.get(taskId));
         save();
         return subTaskList.get(taskId);

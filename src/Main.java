@@ -3,6 +3,8 @@ import manager.Managers;
 import manager.TaskManager;
 import task.Task;
 
+import java.time.LocalDateTime;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -10,7 +12,7 @@ public class Main {
         HistoryManager historyManager = Managers.getDefaultHistoryManager();
         System.out.println("начало проверки");
         for (int i = 1; i < 20; i++) {
-            taskManager.addNewTask(new Task("name" + i, "desc" + i));
+            taskManager.addNewTask(new Task("name" + i, "desc" + i, LocalDateTime.of(2023, 2, 11, 1, 1), 1));
         }
         for (int i = 5; i < 18; i++) {
             taskManager.getTaskById(i);
