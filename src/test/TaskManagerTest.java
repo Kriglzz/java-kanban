@@ -172,14 +172,14 @@ abstract class TaskManagerTest<T extends TaskManager>{
 
     @Test
     void shouldReturnPrioritizedTasks() { //FAILED
-        /*SubTask subTask8 = new SubTask("subtask7", "description7", 1,  null, 0);
-        taskManager.addNewSubTask(subTask8); // Тут начинает лезть в глубь
+        /*SubTask subTask8 = new SubTask("subTask7", "description7", 1,  null, 0);
+        taskManager.addNewSubTask(subtask7); // Тут начинает лезть в глубь
 
-        SubTask subTask9 = new SubTask("subtask8", "description8", 1, LocalDateTime.of(2023, 2, 15, 1, 1), 1);
-        taskManager.addNewSubTask(subTask9);
+        SubTask subTask9 = new SubTask("subTask8", "description8", 1, LocalDateTime.of(2023, 2, 15, 1, 1), 1);
+        taskManager.addNewSubTask(subtask8);
 
-        SubTask subTask10 = new SubTask("subtask9", "description9", 1, LocalDateTime.of(2023, 2, 16, 1, 1), 1);
-        taskManager.addNewSubTask(subTask10);*/
+        SubTask subTask10 = new SubTask("subTask9", "description9", 1, LocalDateTime.of(2023, 2, 16, 1, 1), 1);
+        taskManager.addNewSubTask(subtask9);*/
 
         System.out.println(taskManager.getPrioritizedTasks());
         assertEquals(7, taskManager.getPrioritizedTasks().size());
