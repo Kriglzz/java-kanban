@@ -9,20 +9,38 @@ public class TimeComparator implements Comparator<Task> {
 
     @Override
     public int compare(Task o1, Task o2) {
-        LocalDateTime time1 = o1.getStartTime();
-        LocalDateTime time2 = o2.getStartTime();
-        if (time1 == null && time2 == null) {
+        LocalDateTime startTime1 = o1.getStartTime();
+        LocalDateTime startTime2 = o2.getStartTime();
+        LocalDateTime endTime1 = o1.getEndTime();
+        LocalDateTime endTime2 = o2.getEndTime();
+
+        if (startTime1 == null && endTime1 == null && startTime2 == null && endTime2 == null) {
             return o1.getName().compareTo(o2.getName());
-        } else if (time1 == null) {
-            return 1;
-        } else if (time2 == null) {
-            return -1;
         } else {
-            int dateTimeComparison = time1.compareTo(time2);
-            if (dateTimeComparison == 0) {
-                return o1.getName().compareTo(o2.getName());
+            // Сравниваем по начальному времени
+            if (startTime1 != null && startTime2 != null) {
+                int startTimeComparison = startTime1.compareTo(startTime2);
+                if (startTimeComparison != 0) {
+                    return startTimeComparison;
+                }
+            } else if (startTime1 != null) {
+                return 1;
+            } else if (startTime2 != null) {
+                return -1;
             }
-            return dateTimeComparison;
+            // Если время одинаковое
+            if (endTime1 != null && endTime2 != null) {
+                int endTimeComparison = endTime1.compareTo(endTime2);
+                if (endTimeComparison != 0) {
+                    return endTimeComparison;
+                }
+            } else if (endTime1 != null) {
+                return 1;
+            } else if (endTime2 != null) {
+                return -1;
+            }
+            // Начальное и конечное одинаковое
+            return o1.getName().compareTo(o2.getName());
         }
     }
 }
