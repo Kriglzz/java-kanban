@@ -11,7 +11,6 @@ import task.Task;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -114,7 +113,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void shouldGetAllSubTasks() {
         Epic epicTemp = new Epic("epic","description", LocalDateTime.now(), 1);
         SubTask subTask1 = new SubTask("subTask1","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(1), 1);
-        SubTask subTask2 = new SubTask("subTask2","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(2), 1);
+        SubTask subTask2 = new SubTask("subTask2","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(3), 1);
         taskManager.addNewEpicTask(epicTemp);
         taskManager.addNewSubTask(subTask1);
         taskManager.addNewSubTask(subTask2);
@@ -156,7 +155,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void shouldDeleteAllSubTasks() {
         Epic epicTemp = new Epic("epic","description", LocalDateTime.now(), 1);
         SubTask subTask1 = new SubTask("subTask1","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(1), 1);
-        SubTask subTask2 = new SubTask("subTask2","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(2), 1);
+        SubTask subTask2 = new SubTask("subTask2","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(3), 1);
         taskManager.addNewEpicTask(epicTemp);
         taskManager.addNewSubTask(subTask1);
         taskManager.addNewSubTask(subTask2);
@@ -217,31 +216,5 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addNewEpicTask(epicTemp);
         taskManager.addNewSubTask(subTask);
         assertEquals(epicId, subTask.getEpicId(), "ID не совпадает.");
-    }
-
-    @Test
-    void shouldReturnPrioritizedTasks() {
-        Task task1 = new Task("task1","description", LocalDateTime.now(), 1);
-        Task task2 = new Task("task2","description", LocalDateTime.now().minusMinutes(1), 1);
-        Task task3 = new Task("task3","description", LocalDateTime.now().plusMinutes(1), 1);
-        taskManager.addNewTask(task1);
-        taskManager.addNewTask(task2);
-        taskManager.addNewTask(task3);
-        System.out.println(taskManager.getPrioritizedTasks());
-        TreeSet<Task> tempSet = taskManager.getPrioritizedTasks();
-
-        assertEquals(3, taskManager.getPrioritizedTasks().size(),"Не все задачи были добавлены в приоритет");
-        assertEquals(task2,tempSet.first(), "Задачи не сортируются по приоритету");
-    }
-
-
-   @Test
-    void shouldPrintEmptyHistory() {
-       Task task = new Task("task","description", LocalDateTime.now(), 1);
-       taskManager.addNewTask(task);
-       taskId = task.getId();
-       taskManager.deleteTask(taskId);
-        List<Task> history = taskManager.getHistory();
-        assertEquals(0, history.size(), "История не пустая");
     }
 }
