@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     protected FileBackedTasksManagerTest() {
-        super(new FileBackedTasksManager(new File("saveTasks2.csv")));
+        super(new FileBackedTasksManager(new File("test/TEST.csv")));
     }
 
 
@@ -34,7 +34,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
         taskManager.getEpicById(epicId);
         taskManager.getSubTaskById(subTaskId);
         taskManager.save();
-        taskManager.loadFromFile(new File("saveTasks2.csv"));
+        taskManager.loadFromFile(new File("test/TEST.csv"));
 
         assertEquals(1, taskManager.getAllTask().size());
         assertEquals(1, taskManager.getAllSubTask().size());

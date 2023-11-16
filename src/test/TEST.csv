@@ -1,0 +1,6 @@
+id,type,name,status,description,epic
+42, TASK, loadedTask, description, NEW, 2023.11.13 18:50, 60
+44, SUBTASK, loadedSubTask, description, NEW, 43, 2023.11.13 18:52, 60
+43, EPIC, loadedEpic, description, NEW, 2023.11.13 18:50, 120
+
+44,43,42
