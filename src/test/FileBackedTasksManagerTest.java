@@ -15,7 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     protected FileBackedTasksManagerTest() {
-        super(new FileBackedTasksManager(new File("test/TEST.csv")));
+        super();
+        taskManager = new FileBackedTasksManager(new File("src/test/TEST.csv"));
     }
 
 
@@ -34,7 +35,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
         taskManager.getEpicById(epicId);
         taskManager.getSubTaskById(subTaskId);
         taskManager.save();
-        taskManager.loadFromFile(new File("test/TEST.csv"));
+        taskManager.loadFromFile(new File("src/test/TEST.csv"));
 
         assertEquals(1, taskManager.getAllTask().size());
         assertEquals(1, taskManager.getAllSubTask().size());
@@ -51,7 +52,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
         taskManager.addNewSubTask(subTask);
         taskManager.deleteAllTask();
         taskManager.save();
-        taskManager.loadFromFile(new File("saveTasks2.csv"));
+        taskManager.loadFromFile(new File("src/test/TEST.csv"));
         assertEquals(0, taskManager.getAllTask().size());
         assertEquals(1, taskManager.getAllSubTask().size());
         assertEquals(0, taskManager.getHistory().size());
@@ -67,7 +68,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
         taskManager.addNewSubTask(subTask);
         taskManager.deleteAllSubTask();
         taskManager.save();
-        taskManager.loadFromFile(new File("saveTasks2.csv"));
+        taskManager.loadFromFile(new File("src/test/TEST.csv"));
         assertEquals(1, taskManager.getAllTask().size());
         assertEquals(0, taskManager.getAllSubTask().size());
         assertEquals(0, taskManager.getHistory().size());

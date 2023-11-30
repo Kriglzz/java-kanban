@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     public InMemoryTaskManagerTest() {
-        super(new InMemoryTaskManager());
+        super();
+        taskManager = new InMemoryTaskManager();
     }
 
     @Test

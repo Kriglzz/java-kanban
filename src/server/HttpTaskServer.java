@@ -1,9 +1,11 @@
 package server;
 
+import client.KVServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import manager.Managers;
 import manager.TaskManager;
 import task.Epic;
@@ -13,6 +15,7 @@ import task.Task;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -24,6 +27,7 @@ public class HttpTaskServer implements HttpHandler {
     private final static Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new DateTimeAdapter())
             .create();
+    private final HttpTaskManager httpTaskManager = new HttpTaskManager("http://localhost:8080/");
     protected static TaskManager taskManager = Managers.getDefault();
 
     private static void writeResponse(HttpExchange exchange, String responseString, int responseCode) throws IOException {
@@ -102,6 +106,9 @@ public class HttpTaskServer implements HttpHandler {
             case DELETE_ALL_SUBTASKS: {
                 deleteAllSubTasks(httpExchange);
             }
+/*            case GET_PRIORITIZED_TASKS: {
+                getPrioritizedTask(httpExchange);
+            }*/
             default:
                 writeResponse(httpExchange, "Ошибка. Выбранный endpoint не реализован", 404);
         }
@@ -192,10 +199,12 @@ public class HttpTaskServer implements HttpHandler {
 
     // TASK
     private void getAllTasks(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         writeResponse(exchange, gson.toJson(taskManager.getAllTask()), 200);
     }
 
     private void addTask(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Task task = gson.fromJson(body, Task.class);
@@ -204,6 +213,7 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void getTask(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
@@ -212,6 +222,7 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void deleteTask(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
@@ -221,11 +232,13 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void deleteAllTasks(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         taskManager.deleteAllTask();
         writeResponse(exchange, "Все задачи были удалены.", 200);
     }
 
     private void updateTask(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Task task = gson.fromJson(body, Task.class);
@@ -235,10 +248,12 @@ public class HttpTaskServer implements HttpHandler {
 
     //epic
     private void getAllEpics(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         writeResponse(exchange, gson.toJson(taskManager.getAllEpic()), 200);
     }
 
     private void addEpic(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Epic epic = gson.fromJson(body, Epic.class);
@@ -247,6 +262,7 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void getEpic(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
@@ -255,6 +271,7 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void deleteEpic(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
@@ -264,11 +281,13 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void deleteAllEpics(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         taskManager.deleteAllTask();
         writeResponse(exchange, "Все задачи были удалены.", 200);
     }
 
     private void updateEpic(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Epic epic = gson.fromJson(body, Epic.class);
@@ -278,10 +297,12 @@ public class HttpTaskServer implements HttpHandler {
 
     //SUBTASK
     private void getAllSubTasks(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         writeResponse(exchange, gson.toJson(taskManager.getAllTask()), 200);
     }
 
     private void addSubTask(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         SubTask subTask = gson.fromJson(body, SubTask.class);
@@ -290,6 +311,7 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void getSubTask(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
@@ -298,6 +320,7 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void deleteSubTask(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
@@ -312,10 +335,36 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void updateSubTask(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         SubTask subTask = gson.fromJson(body, SubTask.class);
         taskManager.updateTask(subTask);
         writeResponse(exchange, "Задача " + subTask.getName() + " обновлена!", 200);
+    }
+
+    /*    private void getPrioritizedTask(HttpExchange httpExchange) throws IOException {
+            httpTaskManager.serverLoad();
+            String json = gson.toJson(taskManager.getPrioritizedTasks());
+                writeResponse(httpExchange, json, 200);
+        }*/
+    public static void main(String[] args) throws IOException {
+        try {
+            KVServer kvServer = new KVServer();
+            kvServer.start();
+            System.out.println("KVServer запущен");
+            HttpServer server = HttpServer.create(new InetSocketAddress(8081), 0);
+
+            server.createContext("/GET/tasks/task", new HttpTaskServer());
+            server.createContext("/subtasks/subtask", new HttpTaskServer());
+            server.createContext("/epics/epic", new HttpTaskServer());
+
+            server.start();
+            System.out.println("Основной? сервер запущен");
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println("Ошибка запуска сервера.");
+        }
     }
 }

@@ -16,13 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 abstract class TaskManagerTest<T extends TaskManager> {
 
-    protected final T taskManager;
+    protected  T taskManager;
     protected int taskId;
     protected int epicId;
     protected int subTaskId;
-    protected TaskManagerTest(T taskManager){
-        this.taskManager = taskManager;
-    }
     @BeforeEach
     public void BeforeEach(){
         taskManager.deleteAllTask();

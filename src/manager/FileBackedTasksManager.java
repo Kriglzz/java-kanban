@@ -13,14 +13,14 @@ import java.util.LinkedList;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final File file;
+    protected File file;
     public static void main(String[] args){
 
         FileBackedTasksManager fileManager = new FileBackedTasksManager(new File("saveTasks.csv"));
         fileManager.addNewTask(new Task("task1", "Купить автомобиль", LocalDateTime.of(2023, 1, 10, 1, 1), 1));
         fileManager.addNewEpicTask(new Epic("new Epic1", "Новый Эпик", LocalDateTime.of(2023, 2, 11, 1, 1), 1));
         fileManager.addNewSubTask(new SubTask("New Subtask", "Подзадача", 2, LocalDateTime.of(2023, 3, 11, 1, 1), 1));
-        fileManager.addNewSubTask(new SubTask("New Subtask2", "Подзадача2", 2, LocalDateTime.of(2023, 3, 11, 1, 1), 1));
+        fileManager.addNewSubTask(new SubTask("New Subtask2", "Подзадача2", 2, LocalDateTime.of(2023, 3, 12, 1, 1), 1));
         fileManager.getTaskById(1);
         fileManager.getEpicById(2);
         fileManager.getSubTaskById(3);
@@ -29,7 +29,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(fileManager.getAllSubTask());
         System.out.println(fileManager.getHistory());
         System.out.println("\n\n" + "new" + "\n\n");
-        FileBackedTasksManager fileBackedTasksManager = loadFromFile(new File("saveTasks2.csv"));
+        FileBackedTasksManager fileBackedTasksManager = loadFromFile(new File("saveTasks.csv"));
         System.out.println(fileBackedTasksManager.getAllTask());
         System.out.println(fileBackedTasksManager.getAllEpic());
         System.out.println(fileBackedTasksManager.getAllSubTask());
@@ -39,6 +39,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public FileBackedTasksManager(File file) {
         super();
         this.file = file;
+    }
+
+    public FileBackedTasksManager() {
     }
 
     public static FileBackedTasksManager loadFromFile(File file) {
