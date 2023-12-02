@@ -29,6 +29,7 @@ public class Main {
         System.out.println(gson.toJson(task));
         System.out.println(gson.toJson(epic));
         System.out.println(gson.toJson(subTask));
+
         /*System.out.println("начало проверки");
         for (int i = 1; i < 20; i++) {
             taskManager.addNewTask(new Task("name" + i, "desc" + i, LocalDateTime.of(2023, 2, 11, 1, 1), 1));
