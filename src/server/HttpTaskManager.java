@@ -20,14 +20,21 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
 
     public HttpTaskManager(String URL) {
+        super(null);
         client = new KVTaskClient(URL);
     }
 
     @Override
     public void save() {
-        client.put("tasks", gson.toJson(taskList.values()));
-        client.put("subtasks", gson.toJson(subTaskList.values()));
-        client.put("epics", gson.toJson(epicList.values()));
+        if (!getAllTask().isEmpty()) {
+            client.put("tasks", gson.toJson(getAllTask().toArray()));
+        }
+        if (!getAllSubTask().isEmpty()) {
+            client.put("subtasks", gson.toJson(getAllSubTask().toArray()));
+        }
+        if (!getAllEpic().isEmpty()) {
+            client.put("epics", gson.toJson(getAllEpic().toArray()));
+        }
 
         List<Task> history = new ArrayList<>(historyManager.getHistory());
 

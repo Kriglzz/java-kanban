@@ -8,6 +8,7 @@ import task.Status;
 import task.SubTask;
 import task.Task;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +22,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected int epicId;
     protected int subTaskId;
     @BeforeEach
-    public void BeforeEach(){
+    public void BeforeEach() throws IOException {
         taskManager.deleteAllTask();
         taskManager.deleteAllEpic();
         taskManager.deleteAllSubTask();

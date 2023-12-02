@@ -1,16 +1,35 @@
+import client.KVServer;
+import com.google.gson.Gson;
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
+import server.HttpTaskManager;
+import task.Epic;
+import task.SubTask;
 import task.Task;
+import manager.FileBackedTasksManager;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
+        KVServer kvServer = new KVServer();
+        Gson gson = new Gson();
+        kvServer.start();
         TaskManager taskManager = Managers.getDefault();
+        //FileBackedTasksManager.testSprint(taskManager);  // тестовые данные для ФЗ 8-го спринта
+        Task task = new Task("task", "description", LocalDateTime.now(), 1);
+        Epic epic = new Epic("epicTemp", "description", LocalDateTime.now().plusMinutes(3), 1);
+        SubTask subTask = new SubTask("subTask","description", epic.getId(), LocalDateTime.now().plusMinutes(5), 1);
+        HttpTaskManager taskManagerNew = new HttpTaskManager("http://localhost:8085/");
+        taskManagerNew.serverLoad();
         HistoryManager historyManager = Managers.getDefaultHistoryManager();
-        System.out.println("начало проверки");
+        System.out.println(gson.toJson(task));
+        System.out.println(gson.toJson(epic));
+        System.out.println(gson.toJson(subTask));
+        /*System.out.println("начало проверки");
         for (int i = 1; i < 20; i++) {
             taskManager.addNewTask(new Task("name" + i, "desc" + i, LocalDateTime.of(2023, 2, 11, 1, 1), 1));
         }
@@ -19,7 +38,7 @@ public class Main {
         }
         var e = taskManager.getHistory();
         System.out.println(e);
-        System.out.println("конец проверки");
+        System.out.println("конец проверки");*/
         /*Task task1 = new Task("задача", "описание");
         Task task2 = new Task("з2", "о2");
         Task task3 = new Task("Изменено", "Изменено");
