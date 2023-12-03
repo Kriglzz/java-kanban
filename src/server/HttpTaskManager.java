@@ -29,11 +29,11 @@ public class HttpTaskManager extends FileBackedTasksManager {
         if (!getAllTask().isEmpty()) {
             client.put("tasks", gson.toJson(getAllTask().toArray()));
         }
-        if (!getAllSubTask().isEmpty()) {
-            client.put("subtasks", gson.toJson(getAllSubTask().toArray()));
-        }
         if (!getAllEpic().isEmpty()) {
             client.put("epics", gson.toJson(getAllEpic().toArray()));
+        }
+        if (!getAllSubTask().isEmpty()) {
+            client.put("subtasks", gson.toJson(getAllSubTask().toArray()));
         }
 
         List<Task> history = new ArrayList<>(historyManager.getHistory());

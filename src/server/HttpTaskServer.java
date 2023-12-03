@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import manager.Managers;
 import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
@@ -27,18 +26,18 @@ public class HttpTaskServer implements HttpHandler {
     private final static Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new DateTimeAdapter())
             .create();
-    private final HttpTaskManager httpTaskManager = new HttpTaskManager("http://localhost:8080/");
-    protected static TaskManager taskManager = Managers.getDefault();
+    private final HttpTaskManager httpTaskManager = new HttpTaskManager("http://localhost:8078/");
+    protected static TaskManager taskManager;
+
+    public HttpTaskServer() {
+        taskManager = httpTaskManager;
+    }
 
     private static void writeResponse(HttpExchange exchange, String responseString, int responseCode) throws IOException {
-        if (responseString.isBlank()) {
-            exchange.sendResponseHeaders(responseCode, 0);
-        } else {
-            byte[] bytes = responseString.getBytes(DEFAULT_CHARSET);
-            exchange.sendResponseHeaders(responseCode, bytes.length);
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(bytes);
-            }
+        byte[] bytes = responseString.getBytes(DEFAULT_CHARSET);
+        exchange.sendResponseHeaders(responseCode, bytes.length);
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(bytes);
         }
         exchange.close();
     }
@@ -200,7 +199,10 @@ public class HttpTaskServer implements HttpHandler {
     // TASK
     private void getAllTasks(HttpExchange exchange) throws IOException {
         httpTaskManager.serverLoad();
-        writeResponse(exchange, gson.toJson(taskManager.getAllTask()), 200);
+        String json = gson.toJson(taskManager.getAllTask());
+        System.out.println("Debug JSON: " + json);
+        writeResponse(exchange, json, 200);
+        //writeResponse(exchange, gson.toJson(taskManager.getAllTask()), 200);
     }
 
     private void addTask(HttpExchange exchange) throws IOException {
@@ -349,22 +351,47 @@ public class HttpTaskServer implements HttpHandler {
                 writeResponse(httpExchange, json, 200);
         }*/
     public static void main(String[] args) throws IOException {
+        KVServer kvServer = new KVServer();
+        Gson gson = new Gson();
+        kvServer.start();
+        //FileBackedTasksManager.testSprint(taskManager);  // тестовые данные для ФЗ 8-го спринта
+        Task task = new Task("task", "description", LocalDateTime.now(), 1);
+        Epic epic = new Epic("epic", "description", LocalDateTime.now().plusMinutes(3), 1);
+        SubTask subTask1 = new SubTask("subTask1", "description", epic.getId(), LocalDateTime.now().plusMinutes(5), 1);
+        SubTask subTask2 = new SubTask("subTask2", "description", epic.getId(), LocalDateTime.now().plusMinutes(7), 1);
+        HttpTaskManager taskManagerNew = new HttpTaskManager("http://localhost:8078/");
+
         try {
-            KVServer kvServer = new KVServer();
-            kvServer.start();
-            System.out.println("KVServer запущен");
-            HttpServer server = HttpServer.create(new InetSocketAddress(8081), 0);
-
-            server.createContext("/GET/tasks/task", new HttpTaskServer());
-            server.createContext("/subtasks/subtask", new HttpTaskServer());
-            server.createContext("/epics/epic", new HttpTaskServer());
-
-            server.start();
-            System.out.println("Основной? сервер запущен");
-
+            HttpServer httpServer = HttpServer.create();
+            httpServer.bind(new InetSocketAddress(8080), 0);
+            httpServer.createContext("/tasks", new HttpTaskServer());
+            httpServer.createContext("/tasks/history", new HttpTaskServer());
+            httpServer.createContext("/tasks/task", new HttpTaskServer());
+            httpServer.createContext("/epics/epic", new HttpTaskServer());
+            httpServer.start();
+            System.out.println("Сервер на порту 8080 запущен");
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println("Ошибка запуска сервера.");
+            System.out.println("Сервер не запускается");
         }
+
+        taskManagerNew.addNewTask(task);
+        taskManagerNew.addNewEpicTask(epic);
+        taskManagerNew.addNewSubTask(subTask1);
+        taskManagerNew.addNewSubTask(subTask2);
+
+        taskManagerNew.getTaskById(1);
+        taskManagerNew.getEpicById(2);
+        taskManagerNew.getSubTaskById(3);
+        taskManagerNew.getSubTaskById(4);
+
+        taskManagerNew.serverLoad();
+
+        System.out.println(gson.toJson(task));
+        System.out.println(gson.toJson(epic));
+        System.out.println(gson.toJson(subTask1));
+        System.out.println(gson.toJson(subTask2));
+        String json = gson.toJson(taskManagerNew.getAllTask());
+        System.out.println("Debug JSON: " + json);
     }
 }

@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 
 public class SubTask extends Task {
 
-    protected TaskType taskType;
     private int epicId;
 
     public SubTask(String name, String description, int epicId, LocalDateTime startTime, int duration) {
