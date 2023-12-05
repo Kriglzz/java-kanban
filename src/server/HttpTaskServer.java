@@ -52,62 +52,47 @@ public class HttpTaskServer implements HttpHandler {
             case GET_ALL_TASKS: {
                 getAllTasks(httpExchange);
             }
+            case DELETE_ALL_TASKS: {
+                deleteAllTasks(httpExchange);
+            }
+            case GET_HISTORY: {
+                getHistory(httpExchange);
+            }
+            case GET_PRIORITIZED_TASKS: {
+                getPrioritizedTask(httpExchange);
+            }
             case ADD_TASK: {
-                addTask(httpExchange);
+                addOrUpdateTask(httpExchange);
             }
             case GET_TASK_BY_ID: {
                 getTask(httpExchange);
             }
-            case UPDATE_TASK: {
-                updateTask(httpExchange);
-            }
+
             case DELETE_TASK_BY_ID: {
                 deleteTask(httpExchange);
             }
-            case DELETE_ALL_TASKS: {
-                deleteAllTasks(httpExchange);
-            }
             //EPIC
-            case GET_ALL_EPICS: {
-                getAllEpics(httpExchange);
-            }
             case ADD_EPIC: {
-                addEpic(httpExchange);
+                addOrUpdateEpic(httpExchange);
             }
             case GET_EPIC_BY_ID: {
                 getEpic(httpExchange);
             }
-            case UPDATE_EPIC: {
-                updateEpic(httpExchange);
-            }
+
             case DELETE_EPIC_BY_ID: {
                 deleteEpic(httpExchange);
             }
-            case DELETE_ALL_EPICS: {
-                deleteAllEpics(httpExchange);
-            }
             //SUBTASK
-            case GET_ALL_SUBTASKS: {
-                getAllSubTasks(httpExchange);
-            }
             case ADD_SUBTASK: {
-                addSubTask(httpExchange);
+                addOrUpdateSubTask(httpExchange);
             }
             case GET_SUBTASK_BY_ID: {
                 getSubTask(httpExchange);
             }
-            case UPDATE_SUBTASK: {
-                updateSubTask(httpExchange);
-            }
+
             case DELETE_SUBTASK_BY_ID: {
                 deleteSubTask(httpExchange);
             }
-            case DELETE_ALL_SUBTASKS: {
-                deleteAllSubTasks(httpExchange);
-            }
-/*            case GET_PRIORITIZED_TASKS: {
-                getPrioritizedTask(httpExchange);
-            }*/
             default:
                 writeResponse(httpExchange, "Ошибка. Выбранный endpoint не реализован", 404);
         }
@@ -115,103 +100,116 @@ public class HttpTaskServer implements HttpHandler {
 
     private Endpoint getEndpoint(String requestPath, String requestMethod, HttpExchange httpExchange) {
         String[] path = requestPath.split("/");
+        String query = httpExchange.getRequestURI().getQuery();
         switch (requestMethod) {
             case "GET":
-                switch (path[1]) {
-                    case "tasks":  //GET/tasks
-                        if (path[2].equals("task")) {//GET/tasks/task
-                            return Endpoint.GET_TASK_BY_ID;
-                        } else if (path[2].isEmpty()) { //GET/tasks
-                            return Endpoint.GET_ALL_TASKS;
-                        } else if (path[2].equals("history")) { //GET/tasks/history
-                            return Endpoint.GET_HISTORY;
-                        }
-
-                    case "epics":  //GET/tasks
-                        if (path[2].equals("epic")) {//GET/epics/epic
+                if (path.length > 2) {
+                    switch (path[2]) {
+                        case "task":
+                            if (path.length == 3 && (query == null || !query.contains("id"))) {
+                                return Endpoint.GET_ALL_TASKS;
+                            } else {
+                                return Endpoint.GET_TASK_BY_ID;
+                            }
+                        case "epic":
                             return Endpoint.GET_EPIC_BY_ID;
-                        } else if (path[2].isEmpty()) { //GET/epics
-                            return Endpoint.GET_ALL_EPICS;
-                        } else if (path[2].equals("history")) { //GET/epics/history
-                            return Endpoint.GET_HISTORY;
-                        }
-
-                    case "subtasks":  //GET/subtasks
-                        if (path[2].equals("epic")) {//GET/subtasks/subtask
+                        case "subtask":
                             return Endpoint.GET_SUBTASK_BY_ID;
-                        } else if (path[2].isEmpty()) { //GET/epics
-                            return Endpoint.GET_ALL_SUBTASKS;
-                        } else if (path[2].equals("history")) { //GET/subtasks/history
+                        case "history":
                             return Endpoint.GET_HISTORY;
-                        }
-
+                    }
+                    break;
+                } else {
+                    return Endpoint.GET_PRIORITIZED_TASKS;
+                }
+            case "POST":
+                switch (path[2]) {
+                    case "task":
+                        return Endpoint.ADD_TASK;
+                    case "epic":
+                        return Endpoint.ADD_EPIC;
+                    case "subtask":
+                        return Endpoint.ADD_SUBTASK;
                 }
                 break;
             case "DELETE":
-                switch (path[1]) {
-                    case "tasks":  //DELETE/tasks
-                        if (path[2].equals("task")) {//DELETE/tasks/task
-                            return Endpoint.DELETE_TASK_BY_ID;
-                        } else if (path[2].isEmpty()) { //DELETE/tasks
+                switch (path[2]) {
+                    case "task":
+                        if (path.length == 3 && !query.contains("id")) {
                             return Endpoint.DELETE_ALL_TASKS;
+                        } else {
+                            return Endpoint.DELETE_TASK_BY_ID;
                         }
-
-                    case "epics":  //DELETE/tasks
-                        if (path[2].equals("epic")) {//DELETE/epics/epic
-                            return Endpoint.DELETE_EPIC_BY_ID;
-                        } else if (path[2].isEmpty()) { //DELETE/epics
-                            return Endpoint.DELETE_ALL_EPICS;
-                        }
-
-                    case "subtasks":  //DELETE/subtasks
-                        if (path[2].equals("subtask")) {//DELETE/subtasks/subtask
-                            return Endpoint.DELETE_SUBTASK_BY_ID;
-                        } else if (path[2].isEmpty()) { //DELETE/subtasks
-                            return Endpoint.DELETE_ALL_SUBTASKS;
-                        }
-
+                    case "epic":
+                        return Endpoint.DELETE_EPIC_BY_ID;
+                    case "subtask":
+                        return Endpoint.DELETE_SUBTASK_BY_ID;
                 }
                 break;
-            case "POST":
-                switch (path[1]) {
-                    case "tasks":  //POST/tasks
-                        if (path[2].equals("task")) {//POST/tasks/task
-                            return Endpoint.UPDATE_TASK;
-                        }
-
-                    case "epics":  //POST/tasks
-                        if (path[2].equals("epic")) {//POST/epics/epic
-                            return Endpoint.UPDATE_EPIC;
-                        }
-
-                    case "subtasks":  //POST/subtasks
-                        if (path[2].equals("subtask")) {//POST/subtasks/subtask
-                            return Endpoint.UPDATE_SUBTASK;
-                        }
-
-                }
             default:
                 return Endpoint.UNKNOWN;
+
         }
+
+
         return Endpoint.UNKNOWN;
     }
 
     // TASK
     private void getAllTasks(HttpExchange exchange) throws IOException {
         httpTaskManager.serverLoad();
-        String json = gson.toJson(taskManager.getAllTask());
-        System.out.println("Debug JSON: " + json);
-        writeResponse(exchange, json, 200);
-        //writeResponse(exchange, gson.toJson(taskManager.getAllTask()), 200);
+        String jsonTasks = gson.toJson(httpTaskManager.getAllTask());
+        String jsonEpicTasks = gson.toJson(httpTaskManager.getAllEpic());
+        String jsonSubTasks = gson.toJson(httpTaskManager.getAllSubTask());
+        httpTaskManager.save();
+        writeResponse(exchange, jsonTasks + jsonEpicTasks + jsonSubTasks, 200);
     }
 
-    private void addTask(HttpExchange exchange) throws IOException {
+    private void deleteAllTasks(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
+        httpTaskManager.deleteAllTask();
+        httpTaskManager.deleteAllSubTask();
+        httpTaskManager.deleteAllEpic();
+        writeResponse(exchange, "Все задачи были удалены.", 200);
+        httpTaskManager.save();
+    }
+
+    private void getHistory(HttpExchange exchange) throws IOException {
+        httpTaskManager.serverLoad();
+        if (!httpTaskManager.getHistory().isEmpty()) {
+            String json = gson.toJson(httpTaskManager.getHistory());
+            if (!json.equals("[]")) {
+                httpTaskManager.save();
+                writeResponse(exchange, json, 200);
+            } else {
+                httpTaskManager.save();
+                writeResponse(exchange, "Список истории пустой", 400);
+            }
+        }
+    }
+
+    private void getPrioritizedTask(HttpExchange httpExchange) throws IOException {
+        httpTaskManager.serverLoad();
+        String json = gson.toJson(httpTaskManager.getPrioritizedTasks());
+        httpTaskManager.save();
+        writeResponse(httpExchange, json, 200);
+    }
+
+    private void addOrUpdateTask(HttpExchange exchange) throws IOException {
         httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Task task = gson.fromJson(body, Task.class);
-        taskManager.addNewTask(task);
-        writeResponse(exchange, "Задача " + task.getName() + " добавлена!", 200);
+        int id = task.getId();
+        if (httpTaskManager.getAllTask().contains(httpTaskManager.getTaskById(id))) {
+            httpTaskManager.updateTask(task);
+            httpTaskManager.save();
+            writeResponse(exchange, "Задача " + task.getName() + " обновлена!", 200);
+        } else {
+            httpTaskManager.addNewTask(task);
+            httpTaskManager.save();
+            writeResponse(exchange, "Задача " + task.getName() + " добавлена!", 200);
+        }
     }
 
     private void getTask(HttpExchange exchange) throws IOException {
@@ -219,8 +217,10 @@ public class HttpTaskServer implements HttpHandler {
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
-            writeResponse(exchange, gson.toJson(taskManager.getTaskById(id)), 200);
+            httpTaskManager.save();
+            writeResponse(exchange, gson.toJson(httpTaskManager.getTaskById(id)), 200);
         }
+
     }
 
     private void deleteTask(HttpExchange exchange) throws IOException {
@@ -228,39 +228,29 @@ public class HttpTaskServer implements HttpHandler {
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
-            taskManager.deleteTask(id);
+            httpTaskManager.deleteTask(id);
+            httpTaskManager.save();
             writeResponse(exchange, "Задача была удалена.", 200);
         }
     }
 
-    private void deleteAllTasks(HttpExchange exchange) throws IOException {
-        httpTaskManager.serverLoad();
-        taskManager.deleteAllTask();
-        writeResponse(exchange, "Все задачи были удалены.", 200);
-    }
-
-    private void updateTask(HttpExchange exchange) throws IOException {
-        httpTaskManager.serverLoad();
-        InputStream inputStream = exchange.getRequestBody();
-        String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
-        Task task = gson.fromJson(body, Task.class);
-        taskManager.updateTask(task);
-        writeResponse(exchange, "Задача " + task.getName() + " обновлена!", 200);
-    }
-
     //epic
-    private void getAllEpics(HttpExchange exchange) throws IOException {
-        httpTaskManager.serverLoad();
-        writeResponse(exchange, gson.toJson(taskManager.getAllEpic()), 200);
-    }
 
-    private void addEpic(HttpExchange exchange) throws IOException {
+    private void addOrUpdateEpic(HttpExchange exchange) throws IOException {
         httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Epic epic = gson.fromJson(body, Epic.class);
-        taskManager.addNewTask(epic);
-        writeResponse(exchange, "Задача " + epic.getName() + " добавлена!", 200);
+        int id = epic.getId();
+        if (httpTaskManager.getAllEpic().contains(httpTaskManager.getEpicById(id))) {
+            httpTaskManager.updateEpic(epic);
+            httpTaskManager.save();
+            writeResponse(exchange, "Задача " + epic.getName() + " обновлена!", 200);
+        } else {
+            httpTaskManager.addNewEpicTask(epic);
+            httpTaskManager.save();
+            writeResponse(exchange, "Задача " + epic.getName() + " добавлена!", 200);
+        }
     }
 
     private void getEpic(HttpExchange exchange) throws IOException {
@@ -268,8 +258,9 @@ public class HttpTaskServer implements HttpHandler {
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
-            writeResponse(exchange, gson.toJson(taskManager.getEpicById(id)), 200);
+            writeResponse(exchange, gson.toJson(httpTaskManager.getEpicById(id)), 200);
         }
+        httpTaskManager.save();
     }
 
     private void deleteEpic(HttpExchange exchange) throws IOException {
@@ -277,39 +268,30 @@ public class HttpTaskServer implements HttpHandler {
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
-            taskManager.deleteEpic(id);
+            httpTaskManager.deleteEpic(id);
+            httpTaskManager.save();
             writeResponse(exchange, "Задача была удалена.", 200);
         }
     }
 
-    private void deleteAllEpics(HttpExchange exchange) throws IOException {
-        httpTaskManager.serverLoad();
-        taskManager.deleteAllTask();
-        writeResponse(exchange, "Все задачи были удалены.", 200);
-    }
-
-    private void updateEpic(HttpExchange exchange) throws IOException {
-        httpTaskManager.serverLoad();
-        InputStream inputStream = exchange.getRequestBody();
-        String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
-        Epic epic = gson.fromJson(body, Epic.class);
-        taskManager.updateTask(epic);
-        writeResponse(exchange, "Задача " + epic.getName() + " обновлена!", 200);
-    }
-
     //SUBTASK
-    private void getAllSubTasks(HttpExchange exchange) throws IOException {
-        httpTaskManager.serverLoad();
-        writeResponse(exchange, gson.toJson(taskManager.getAllTask()), 200);
-    }
 
-    private void addSubTask(HttpExchange exchange) throws IOException {
+    private void addOrUpdateSubTask(HttpExchange exchange) throws IOException {
         httpTaskManager.serverLoad();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         SubTask subTask = gson.fromJson(body, SubTask.class);
-        taskManager.addNewTask(subTask);
-        writeResponse(exchange, "Задача " + subTask.getName() + " добавлена!", 200);
+        int id = subTask.getId();
+        if (httpTaskManager.getAllSubTask().contains(httpTaskManager.getSubTaskById(id))) {
+            httpTaskManager.updateTask(subTask);
+            httpTaskManager.save();
+            writeResponse(exchange, "Задача " + subTask.getName() + " обновлена!", 200);
+        } else {
+            taskManager.addNewTask(subTask);
+            httpTaskManager.save();
+            writeResponse(exchange, "Задача " + subTask.getName() + " добавлена!", 200);
+        }
+
     }
 
     private void getSubTask(HttpExchange exchange) throws IOException {
@@ -317,7 +299,8 @@ public class HttpTaskServer implements HttpHandler {
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
-            writeResponse(exchange, gson.toJson(taskManager.getSubTaskById(id)), 200);
+            httpTaskManager.save();
+            writeResponse(exchange, gson.toJson(httpTaskManager.getSubTaskById(id)), 200);
         }
     }
 
@@ -326,35 +309,16 @@ public class HttpTaskServer implements HttpHandler {
         Optional<String> path = Optional.ofNullable(exchange.getRequestURI().getQuery());
         if (path.isPresent()) {
             int id = Integer.parseInt(path.get().split("=")[1]);
-            taskManager.deleteSubTask(id);
+            httpTaskManager.deleteSubTask(id);
+            httpTaskManager.save();
             writeResponse(exchange, "Задача была удалена.", 200);
         }
     }
 
-    private void deleteAllSubTasks(HttpExchange exchange) throws IOException {
-        taskManager.deleteAllTask();
-        writeResponse(exchange, "Все задачи были удалены.", 200);
-    }
-
-    private void updateSubTask(HttpExchange exchange) throws IOException {
-        httpTaskManager.serverLoad();
-        InputStream inputStream = exchange.getRequestBody();
-        String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
-        SubTask subTask = gson.fromJson(body, SubTask.class);
-        taskManager.updateTask(subTask);
-        writeResponse(exchange, "Задача " + subTask.getName() + " обновлена!", 200);
-    }
-
-    /*    private void getPrioritizedTask(HttpExchange httpExchange) throws IOException {
-            httpTaskManager.serverLoad();
-            String json = gson.toJson(taskManager.getPrioritizedTasks());
-                writeResponse(httpExchange, json, 200);
-        }*/
     public static void main(String[] args) throws IOException {
         KVServer kvServer = new KVServer();
         Gson gson = new Gson();
         kvServer.start();
-        //FileBackedTasksManager.testSprint(taskManager);  // тестовые данные для ФЗ 8-го спринта
         Task task = new Task("task", "description", LocalDateTime.now(), 1);
         Epic epic = new Epic("epic", "description", LocalDateTime.now().plusMinutes(3), 1);
         SubTask subTask1 = new SubTask("subTask1", "description", epic.getId(), LocalDateTime.now().plusMinutes(5), 1);
