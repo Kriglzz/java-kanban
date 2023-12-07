@@ -41,9 +41,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public FileBackedTasksManager() {
-    }
-
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager read = new FileBackedTasksManager(file);
         LinkedList<String> tasksFromFile = new LinkedList<>();
