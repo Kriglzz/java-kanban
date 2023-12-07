@@ -17,14 +17,17 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.TreeSet;
 
 
 public class HttpTaskServer implements HttpHandler {
     private final static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private final static Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new DateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
             .create();
     private final HttpTaskManager httpTaskManager = new HttpTaskManager("http://localhost:8078/");
     protected static TaskManager taskManager;
@@ -201,11 +204,11 @@ public class HttpTaskServer implements HttpHandler {
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Task task = gson.fromJson(body, Task.class);
         int id = task.getId();
-        if (httpTaskManager.getAllTask().contains(httpTaskManager.getTaskById(id))) {
+        try {httpTaskManager.getTaskById(id);
             httpTaskManager.updateTask(task);
             httpTaskManager.save();
             writeResponse(exchange, "Задача " + task.getName() + " обновлена!", 200);
-        } else {
+        } catch (Exception e){
             httpTaskManager.addNewTask(task);
             httpTaskManager.save();
             writeResponse(exchange, "Задача " + task.getName() + " добавлена!", 200);
@@ -234,7 +237,7 @@ public class HttpTaskServer implements HttpHandler {
         }
     }
 
-    //epic
+   //epic
 
     private void addOrUpdateEpic(HttpExchange exchange) throws IOException {
         httpTaskManager.serverLoad();
@@ -242,11 +245,12 @@ public class HttpTaskServer implements HttpHandler {
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Epic epic = gson.fromJson(body, Epic.class);
         int id = epic.getId();
-        if (httpTaskManager.getAllEpic().contains(httpTaskManager.getEpicById(id))) {
+        try {
+            httpTaskManager.getEpicById(id);
             httpTaskManager.updateEpic(epic);
             httpTaskManager.save();
             writeResponse(exchange, "Задача " + epic.getName() + " обновлена!", 200);
-        } else {
+        } catch (Exception e) {
             httpTaskManager.addNewEpicTask(epic);
             httpTaskManager.save();
             writeResponse(exchange, "Задача " + epic.getName() + " добавлена!", 200);
@@ -282,11 +286,12 @@ public class HttpTaskServer implements HttpHandler {
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         SubTask subTask = gson.fromJson(body, SubTask.class);
         int id = subTask.getId();
-        if (httpTaskManager.getAllSubTask().contains(httpTaskManager.getSubTaskById(id))) {
+        try {
+            httpTaskManager.getSubTaskById(id);
             httpTaskManager.updateTask(subTask);
             httpTaskManager.save();
             writeResponse(exchange, "Задача " + subTask.getName() + " обновлена!", 200);
-        } else {
+        } catch (Exception e) {
             taskManager.addNewTask(subTask);
             httpTaskManager.save();
             writeResponse(exchange, "Задача " + subTask.getName() + " добавлена!", 200);
@@ -317,7 +322,10 @@ public class HttpTaskServer implements HttpHandler {
 
     public static void main(String[] args) throws IOException {
         KVServer kvServer = new KVServer();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new DateTimeAdapter())
+                .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .create();
         kvServer.start();
         Task task = new Task("task", "description", LocalDateTime.now(), 1);
         Epic epic = new Epic("epic", "description", LocalDateTime.now().plusMinutes(3), 1);
@@ -351,11 +359,10 @@ public class HttpTaskServer implements HttpHandler {
 
         taskManagerNew.serverLoad();
 
+
         System.out.println(gson.toJson(task));
         System.out.println(gson.toJson(epic));
         System.out.println(gson.toJson(subTask1));
         System.out.println(gson.toJson(subTask2));
-        String json = gson.toJson(taskManagerNew.getAllTask());
-        System.out.println("Debug JSON: " + json);
     }
 }

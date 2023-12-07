@@ -5,6 +5,7 @@ import manager.*;
 import client.*;
 import task.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new DateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
             .create();
 
 
@@ -34,6 +36,9 @@ public class HttpTaskManager extends FileBackedTasksManager {
         }
         if (!getAllSubTask().isEmpty()) {
             client.put("subtasks", gson.toJson(getAllSubTask().toArray()));
+        }
+        if (!getPrioritizedTasks().isEmpty()){
+            client.put("prioritizedTasks", gson.toJson(getPrioritizedTasks().toArray()));
         }
 
         List<Task> history = new ArrayList<>(historyManager.getHistory());
@@ -82,7 +87,20 @@ public class HttpTaskManager extends FileBackedTasksManager {
                 JsonArray jsonHistoryArray = jsonHistoryList.getAsJsonArray();
                 for (JsonElement jsonArrayElement : jsonHistoryArray) {
                     Task task = gson.fromJson(jsonArrayElement, Task.class);
-                    historyManager.addToHistory(task);
+                    if (!(task == null)) {
+                        historyManager.addToHistory(task);
+                    }
+                }
+            }
+        }
+        Optional<String> prioritizedTask = Optional.ofNullable(client.load("prioritizedTasks"));
+        if (prioritizedTask.isPresent()) {
+            JsonElement jsonPrioritizedTasks = JsonParser.parseString(prioritizedTask.get());
+            if (!jsonPrioritizedTasks.isJsonNull()) {
+                JsonArray jsonArrayPrioritizedTasks = jsonPrioritizedTasks.getAsJsonArray();
+                for (JsonElement jsonPrioritizedTask : jsonArrayPrioritizedTasks) {
+                    Task task = gson.fromJson(jsonPrioritizedTask, SubTask.class);
+                    prioritizedTasks.add(task);
                 }
             }
         }
