@@ -76,7 +76,6 @@ class EpicTest {
         SubTask subTask1 = new SubTask("subtask1", "description1", epic.getId(), LocalDateTime.of(2023, 11, 9, 1, 1), 1);
         taskManager.addNewSubTask(subTask1);
         subTask1.setStatus(Status.DONE);
-        //taskManager.updateSubTask(subTask1);
         SubTask subTask2 = new SubTask("subtask2", "description2", epic.getId(), LocalDateTime.of(2023, 11, 10, 1, 1), 1);
         taskManager.addNewSubTask(subTask2);
         assertEquals(Status.IN_PROGRESS, epic.getStatus(), "Статус не совпадает");
