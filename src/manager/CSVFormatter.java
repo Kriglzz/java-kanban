@@ -10,10 +10,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.LinkedList;
 
-public class CSVFormatter extends InMemoryTaskManager{
+public class CSVFormatter extends InMemoryTaskManager {
     public CSVFormatter() {
         super();
     }
+
     public static Task fromString(String line) {
         String[] linePart = line.split(", ");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm");
@@ -42,6 +43,7 @@ public class CSVFormatter extends InMemoryTaskManager{
         }
         return task;
     }
+
     public static List<Integer> historyFromString(String line) {
         List<Integer> history = new LinkedList<>();
         String[] linePart = line.split(",");

@@ -13,7 +13,8 @@ import java.util.LinkedList;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     protected File file;
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
 
         FileBackedTasksManager fileManager = new FileBackedTasksManager(new File("saveTasks.csv"));
         fileManager.addNewTask(new Task("task1", "Купить автомобиль", LocalDateTime.of(2023, 1, 10, 1, 1), 1));
@@ -73,12 +74,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     static void historyToHash(int id, FileBackedTasksManager manager) {
-        if ( manager.taskList.containsKey(id)) {
-            manager.historyManager.addToHistory( manager.taskList.get(id));
-        } else if ( manager.subTaskList.containsKey(id)) {
-            manager.historyManager.addToHistory( manager.subTaskList.get(id));
-        } else if ( manager.epicList.containsKey(id)) {
-            manager.historyManager.addToHistory( manager.epicList.get(id));
+        if (manager.taskList.containsKey(id)) {
+            manager.historyManager.addToHistory(manager.taskList.get(id));
+        } else if (manager.subTaskList.containsKey(id)) {
+            manager.historyManager.addToHistory(manager.subTaskList.get(id));
+        } else if (manager.epicList.containsKey(id)) {
+            manager.historyManager.addToHistory(manager.epicList.get(id));
         }
     }
 

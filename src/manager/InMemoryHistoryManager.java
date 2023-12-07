@@ -68,7 +68,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public List<Task> getHistory() {
         taskHistory.clear();
         Node<Task> node = tail;
-        while(node != null){
+        while (node != null) {
             taskHistory.add(node.data);
             node = node.prev;
         }

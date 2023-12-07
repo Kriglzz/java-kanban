@@ -7,7 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class KVTaskClient {
-    private  final String URL;
+    private final String URL;
 
     private final String apiToken;
     private final HttpClient httpClient;
@@ -17,6 +17,7 @@ public class KVTaskClient {
         httpClient = HttpClient.newHttpClient();
         apiToken = register();
     }
+
     public String load(String key) {
         try {
             HttpRequest request = HttpRequest.newBuilder()

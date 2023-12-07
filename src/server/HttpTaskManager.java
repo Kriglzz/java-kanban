@@ -37,7 +37,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
         if (!getAllSubTask().isEmpty()) {
             client.put("subtasks", gson.toJson(getAllSubTask().toArray()));
         }
-        if (!getPrioritizedTasks().isEmpty()){
+        if (!getPrioritizedTasks().isEmpty()) {
             client.put("prioritizedTasks", gson.toJson(getPrioritizedTasks().toArray()));
         }
 

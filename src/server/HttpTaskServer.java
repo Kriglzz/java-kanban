@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.TreeSet;
 
 
 public class HttpTaskServer implements HttpHandler {
@@ -204,11 +203,12 @@ public class HttpTaskServer implements HttpHandler {
         String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
         Task task = gson.fromJson(body, Task.class);
         int id = task.getId();
-        try {httpTaskManager.getTaskById(id);
+        try {
+            httpTaskManager.getTaskById(id);
             httpTaskManager.updateTask(task);
             httpTaskManager.save();
             writeResponse(exchange, "Задача " + task.getName() + " обновлена!", 200);
-        } catch (Exception e){
+        } catch (Exception e) {
             httpTaskManager.addNewTask(task);
             httpTaskManager.save();
             writeResponse(exchange, "Задача " + task.getName() + " добавлена!", 200);
@@ -237,7 +237,7 @@ public class HttpTaskServer implements HttpHandler {
         }
     }
 
-   //epic
+    //epic
 
     private void addOrUpdateEpic(HttpExchange exchange) throws IOException {
         httpTaskManager.serverLoad();

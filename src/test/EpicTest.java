@@ -24,15 +24,17 @@ class EpicTest {
         taskManager = Managers.getDefault();
 
     }
+
     @Test
-    public void shouldReturnNewWhenEpicIsEmpty(){
+    public void shouldReturnNewWhenEpicIsEmpty() {
         Epic epic = new Epic("epic", "description", LocalDateTime.of(2023, 11, 1, 1, 1), 1);
         taskManager.addNewEpicTask(epic);
         Assertions.assertEquals(Status.NEW, epic.getStatus());
         taskManager.deleteAllEpic();
     }
+
     @Test
-    public void shouldReturnNewWhenAllSubtasksNew(){
+    public void shouldReturnNewWhenAllSubtasksNew() {
 
         Epic epic = new Epic("epic", "description", LocalDateTime.of(2023, 11, 2, 1, 1), 1);
         taskManager.addNewEpicTask(epic);
@@ -48,7 +50,7 @@ class EpicTest {
     }
 
     @Test
-    public void shouldReturnDoneWhenAllSubtasksDone(){
+    public void shouldReturnDoneWhenAllSubtasksDone() {
 
         Epic epic = new Epic("epic", "description", LocalDateTime.of(2023, 11, 5, 1, 1), 1);
         epic.setId(1);
@@ -67,7 +69,7 @@ class EpicTest {
     }
 
     @Test
-    public void shouldReturnInProgressWhenSubtasksDoneAndNew(){ // FAIL
+    public void shouldReturnInProgressWhenSubtasksDoneAndNew() { // FAIL
 
         Epic epic = new Epic("epic", "description", LocalDateTime.of(2023, 11, 8, 1, 1), 1);
         taskManager.addNewEpicTask(epic);
@@ -83,7 +85,7 @@ class EpicTest {
     }
 
     @Test
-    public void shouldReturnInProgressWhenAllSubtasksInProgress(){
+    public void shouldReturnInProgressWhenAllSubtasksInProgress() {
 
         Epic epic = new Epic("epic", "description", LocalDateTime.of(2023, 11, 11, 1, 1), 1);
         taskManager.addNewEpicTask(epic);

@@ -22,9 +22,9 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
 
     @Test
     void shouldSaveAndShouldLoad() {
-        Task task = new Task("loadedTask","description", LocalDateTime.now(), 1);
-        Epic epicTemp = new Epic("loadedEpic","description", LocalDateTime.now().plusMinutes(1), 1);
-        SubTask subTask = new SubTask("loadedSubTask","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(2), 1);
+        Task task = new Task("loadedTask", "description", LocalDateTime.now(), 1);
+        Epic epicTemp = new Epic("loadedEpic", "description", LocalDateTime.now().plusMinutes(1), 1);
+        SubTask subTask = new SubTask("loadedSubTask", "description", epicTemp.getId(), LocalDateTime.now().plusMinutes(2), 1);
         taskManager.addNewTask(task);
         taskManager.addNewEpicTask(epicTemp);
         taskManager.addNewSubTask(subTask);
@@ -44,9 +44,9 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
 
     @Test
     void shouldSaveWithoutTasks() throws IOException {
-        Task task = new Task("task","description", LocalDateTime.now(), 1);
-        Epic epicTemp = new Epic("epic","description", LocalDateTime.now().plusMinutes(1), 1);
-        SubTask subTask = new SubTask("subTask","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(2), 1);
+        Task task = new Task("task", "description", LocalDateTime.now(), 1);
+        Epic epicTemp = new Epic("epic", "description", LocalDateTime.now().plusMinutes(1), 1);
+        SubTask subTask = new SubTask("subTask", "description", epicTemp.getId(), LocalDateTime.now().plusMinutes(2), 1);
         taskManager.addNewTask(task);
         taskManager.addNewEpicTask(epicTemp);
         taskManager.addNewSubTask(subTask);
@@ -60,9 +60,9 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
 
     @Test
     void shouldSaveWithoutSubtasks() {
-        Task task = new Task("task","description", LocalDateTime.now(), 1);
-        Epic epicTemp = new Epic("epic","description", LocalDateTime.now().plusMinutes(1), 1);
-        SubTask subTask = new SubTask("subTask","description",epicTemp.getId(), LocalDateTime.now().plusMinutes(2), 1);
+        Task task = new Task("task", "description", LocalDateTime.now(), 1);
+        Epic epicTemp = new Epic("epic", "description", LocalDateTime.now().plusMinutes(1), 1);
+        SubTask subTask = new SubTask("subTask", "description", epicTemp.getId(), LocalDateTime.now().plusMinutes(2), 1);
         taskManager.addNewTask(task);
         taskManager.addNewEpicTask(epicTemp);
         taskManager.addNewSubTask(subTask);
